@@ -10,14 +10,22 @@ router.post('/', function (req, res, next) {
   })
   .then(function (user) {
     if (!user) {
-      res.status(401).send('Please sign up!');
+      res.redirect('/signup');
     } else {
-      req.session.userId = user.id;
-
+      req.session.user = user;
       res.status(204).send(user);
     }
   })
   .catch(next);
 });
+
+router.post('/signup', function (req, res, next){
+  User.create(req.body)
+  .then(newUser => {
+    req.session.user = newUser;
+    res.status(201).send(newUser);
+  })
+  .catch(next);
+})
 
 module.exports = router;

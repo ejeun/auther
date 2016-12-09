@@ -2,11 +2,13 @@
 
 var app = require('express')();
 var path = require('path');
-var User = require('../api/users/user.model');
+// var User = require('../api/users/user.model');
 var session = require('express-session');
+
 app.use(require('./logging.middleware'));
 app.use(require('./request-state.middleware'));
 app.use(require('./statics.middleware'));
+
 app.use(session({
 	secret: 'Grace Hopper rules',
 	duration: 1 * 60 * 1000,
@@ -26,7 +28,6 @@ app.use(function (req, res, next) {
 });
 
 app.use('/api', require('../api/api.router'));
-
 
 
 var validFrontendRoutes = ['/', '/stories', '/users', '/stories/:id', '/users/:id', '/signup', '/login'];

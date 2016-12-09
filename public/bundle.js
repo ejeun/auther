@@ -25892,7 +25892,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.fetchUser = undefined;
+	exports.signUp = exports.fetchUser = undefined;
 	exports.default = reducer;
 	
 	var _axios = __webpack_require__(218);
@@ -25904,12 +25904,19 @@
 	/* -----------------    ACTIONS     ------------------ */
 	
 	var SET_CURRENT_USER = 'SET_CURRENT_USER';
+	var SIGN_USER_UP = 'SIGN_USER_UP';
 	
 	/* ------------   ACTION CREATORS     ------------------ */
+	
 	var setCurrentUser = function setCurrentUser(user) {
 	  return { type: SET_CURRENT_USER, user: user };
 	};
+	var signUserUp = function signUserUp(user) {
+	  return { type: SIGN_USER_UP, user: user };
+	};
+	
 	/* ------------       REDUCER     ------------------ */
+	
 	function reducer() {
 	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	  var action = arguments[1];
@@ -25919,11 +25926,16 @@
 	    case SET_CURRENT_USER:
 	      return action.user;
 	
+	    case SIGN_USER_UP:
+	      return action.user;
+	
 	    default:
 	      return user;
 	  }
 	}
+	
 	/* ------------       DISPATCHERS     ------------------ */
+	
 	var fetchUser = exports.fetchUser = function fetchUser(email, password) {
 	  return function (dispatch) {
 	    _axios2.default.post('/api/login', {
@@ -25931,6 +25943,19 @@
 	      password: password
 	    }).then(function (res) {
 	      console.log(res.data);
+	      dispatch(setCurrentUser(res.data));
+	    });
+	  };
+	};
+	
+	var signUp = exports.signUp = function signUp(email, password) {
+	  return function (dispatch) {
+	    _axios2.default.post('/api/login/signUp', {
+	      email: email,
+	      password: password
+	    }).then(function (res) {
+	      console.log(res.data);
+	      dispatch(signUserUp(res.data));
 	      dispatch(setCurrentUser(res.data));
 	    });
 	  };
@@ -32098,14 +32123,14 @@
 	    key: 'onLoginSubmit',
 	    value: function onLoginSubmit(event) {
 	      event.preventDefault();
-	      console.log(event);
-	      console.log(this.props);
+	      // console.log(event);
+	      // console.log(this.props);
 	      var message = this.props.message;
 	
 	      var email = this.state.email;
 	      var password = this.state.password;
 	      this.props.login(email, password);
-	      console.log(message + ' isn\'t implemented yet');
+	      // console.log(`${message} isn't implemented yet`);
 	    }
 	  }]);
 	
@@ -32150,6 +32175,8 @@
 	
 	var _reactRouter = __webpack_require__(246);
 	
+	var _login = __webpack_require__(244);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32168,7 +32195,14 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Signup.__proto__ || Object.getPrototypeOf(Signup)).call(this, props));
 	
+	    _this.state = {
+	      email: '',
+	      password: ''
+	    };
 	    _this.onSignupSubmit = _this.onSignupSubmit.bind(_this);
+	    _this.handleEmailChange = _this.handleEmailChange.bind(_this);
+	    _this.handlePasswordChange = _this.handlePasswordChange.bind(_this);
+	
 	    return _this;
 	  }
 	
@@ -32198,6 +32232,7 @@
 	                name: 'email',
 	                type: 'email',
 	                className: 'form-control',
+	                onChange: this.handleEmailChange,
 	                required: true
 	              })
 	            ),
@@ -32213,6 +32248,7 @@
 	                name: 'password',
 	                type: 'password',
 	                className: 'form-control',
+	                onChange: this.handlePasswordChange,
 	                required: true
 	              })
 	            ),
@@ -32262,10 +32298,32 @@
 	  }, {
 	    key: 'onSignupSubmit',
 	    value: function onSignupSubmit(event) {
-	      var message = this.props.message;
-	
+	      // const { message } = this.props;
 	      event.preventDefault();
-	      console.log(message + ' isn\'t implemented yet');
+	
+	      var email = this.state.email;
+	      var password = this.state.password;
+	      this.props.signup(email, password);
+	      // console.log(`${message} isn't implemented yet`);
+	      console.log('we did it!!!');
+	      // this.setState({
+	      //   email: '',
+	      //   password: ''
+	      // })
+	    }
+	  }, {
+	    key: 'handleEmailChange',
+	    value: function handleEmailChange(evt) {
+	      this.setState({
+	        email: evt.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handlePasswordChange',
+	    value: function handlePasswordChange(evt) {
+	      this.setState({
+	        password: evt.target.value
+	      });
 	    }
 	  }]);
 	
@@ -32277,7 +32335,13 @@
 	var mapState = function mapState() {
 	  return { message: 'Sign up' };
 	};
-	var mapDispatch = null;
+	var mapDispatch = function mapDispatch(dispatch) {
+	  return {
+	    signup: function signup(email, password) {
+	      return dispatch((0, _login.signUp)(email, password));
+	    }
+	  };
+	};
 	
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Signup);
 

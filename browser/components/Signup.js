@@ -1,14 +1,21 @@
 import React from 'react';
 import { connect } from'react-redux';
 import { browserHistory } from 'react-router';
+import { signUp } from '../redux/login';
 
 /* -----------------    COMPONENT     ------------------ */
 
 class Signup extends React.Component {
   constructor(props) {
     super(props);
-    
+    this.state = {
+      email: '',
+      password: '',
+    }
     this.onSignupSubmit = this.onSignupSubmit.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+
   }
 
   render() {
@@ -20,19 +27,21 @@ class Signup extends React.Component {
                 <div className="form-group">
                   <label>email</label>
                   <input
-                    name="email" 
-                    type="email" 
-                    className="form-control" 
-                    required 
+                    name="email"
+                    type="email"
+                    className="form-control"
+                    onChange={this.handleEmailChange}
+                    required
                   />
                 </div>
                 <div className="form-group">
                     <label>password</label>
-                    <input 
+                    <input
                       name="password"
-                      type="password" 
-                      className="form-control" 
-                      required 
+                      type="password"
+                      className="form-control"
+                      onChange={this.handlePasswordChange}
+                      required
                     />
                 </div>
                 <button type="submit" className="btn btn-block btn-primary">{message}</button>
@@ -58,15 +67,42 @@ class Signup extends React.Component {
   }
 
   onSignupSubmit(event) {
-    const { message } = this.props;
+    // const { message } = this.props;
     event.preventDefault();
-    console.log(`${message} isn't implemented yet`);
+
+    const email = this.state.email;
+    const password = this.state.password;
+    this.props.signup(email, password);
+    // console.log(`${message} isn't implemented yet`);
+    console.log('we did it!!!');
+    // this.setState({
+    //   email: '',
+    //   password: ''
+    // })
+  }
+
+  handleEmailChange (evt) {
+    this.setState({
+      email: evt.target.value,
+    });
+  }
+
+  handlePasswordChange (evt) {
+    this.setState({
+      password: evt.target.value,
+    });
   }
 }
 
 /* -----------------    CONTAINER     ------------------ */
 
 const mapState = () => ({ message: 'Sign up' })
-const mapDispatch = null
+const mapDispatch = (dispatch) => {
+  return {
+    signup(email, password){
+      return dispatch(signUp(email, password));
+    }
+  }
+}
 
 export default connect(mapState, mapDispatch)(Signup);
