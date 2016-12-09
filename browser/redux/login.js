@@ -4,11 +4,13 @@ import axios from 'axios';
 
 const SET_CURRENT_USER = 'SET_CURRENT_USER';
 const SIGN_USER_UP = 'SIGN_USER_UP';
+const LOG_USER_OUT = 'LOG_USER_OUT';
 
 /* ------------   ACTION CREATORS     ------------------ */
 
 const setCurrentUser = user => ({ type: SET_CURRENT_USER, user});
 const signUserUp = user => ({type: SIGN_USER_UP, user});
+const logUserOut = () => ({type: LOG_USER_OUT});
 
 /* ------------       REDUCER     ------------------ */
 
@@ -20,6 +22,12 @@ export default function reducer (user = {}, action) {
 
     case SIGN_USER_UP:
       return action.user
+
+    case LOG_USER_OUT:
+      return {
+        email: '',
+        password: ''
+      } ;
 
     default:
       return user;
@@ -35,8 +43,8 @@ export const fetchUser = (email, password) => dispatch => {
     password: password
   })
   .then(res => {
-   console.log(res.data);
-   dispatch(setCurrentUser(res.data))
+   console.log('api login data here', res);
+   dispatch(setCurrentUser({email, password}));
   });
 };
 
@@ -47,7 +55,17 @@ export const signUp = (email, password) => dispatch => {
   })
   .then(res => {
    console.log(res.data);
-   dispatch(signUserUp(res.data));
-   dispatch(setCurrentUser(res.data));
+   dispatch(signUserUp({email, password}));
+   dispatch(setCurrentUser({email, password}));
+  });
+}
+
+export const logOut = () => dispatch => {
+  axios.get('/api/login/logout', {
+
+  })
+  .then(res => {
+
+   dispatch(logUserOut());
   });
 }

@@ -25892,7 +25892,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.signUp = exports.fetchUser = undefined;
+	exports.logOut = exports.signUp = exports.fetchUser = undefined;
 	exports.default = reducer;
 	
 	var _axios = __webpack_require__(218);
@@ -25905,6 +25905,7 @@
 	
 	var SET_CURRENT_USER = 'SET_CURRENT_USER';
 	var SIGN_USER_UP = 'SIGN_USER_UP';
+	var LOG_USER_OUT = 'LOG_USER_OUT';
 	
 	/* ------------   ACTION CREATORS     ------------------ */
 	
@@ -25913,6 +25914,9 @@
 	};
 	var signUserUp = function signUserUp(user) {
 	  return { type: SIGN_USER_UP, user: user };
+	};
+	var logUserOut = function logUserOut() {
+	  return { type: LOG_USER_OUT };
 	};
 	
 	/* ------------       REDUCER     ------------------ */
@@ -25929,6 +25933,12 @@
 	    case SIGN_USER_UP:
 	      return action.user;
 	
+	    case LOG_USER_OUT:
+	      return {
+	        email: '',
+	        password: ''
+	      };
+	
 	    default:
 	      return user;
 	  }
@@ -25942,8 +25952,8 @@
 	      email: email,
 	      password: password
 	    }).then(function (res) {
-	      console.log(res.data);
-	      dispatch(setCurrentUser(res.data));
+	      console.log('api login data here', res);
+	      dispatch(setCurrentUser({ email: email, password: password }));
 	    });
 	  };
 	};
@@ -25955,8 +25965,17 @@
 	      password: password
 	    }).then(function (res) {
 	      console.log(res.data);
-	      dispatch(signUserUp(res.data));
-	      dispatch(setCurrentUser(res.data));
+	      dispatch(signUserUp({ email: email, password: password }));
+	      dispatch(setCurrentUser({ email: email, password: password }));
+	    });
+	  };
+	};
+	
+	var logOut = exports.logOut = function logOut() {
+	  return function (dispatch) {
+	    _axios2.default.get('/api/login/logout', {}).then(function (res) {
+	
+	      dispatch(logUserOut());
 	    });
 	  };
 	};
@@ -31648,6 +31667,8 @@
 	
 	var _reactRouter = __webpack_require__(246);
 	
+	var _login = __webpack_require__(244);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31789,6 +31810,7 @@
 	    logout: function logout() {
 	      console.log('You signed out. Sorta.');
 	      _reactRouter.browserHistory.push('/');
+	      return dispatch((0, _login.logOut)());
 	    }
 	  };
 	};
@@ -50341,6 +50363,7 @@
 	            'li',
 	            null,
 	            _react2.default.createElement('input', {
+	              disabled: 'true',
 	              className: 'form-like large-font',
 	              defaultValue: story.title,
 	              onChange: function onChange(e) {

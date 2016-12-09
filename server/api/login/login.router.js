@@ -13,7 +13,7 @@ router.post('/', function (req, res, next) {
       res.redirect('/signup');
     } else {
       req.session.user = user;
-      res.status(204).send(user);
+      res.sendStatus(204);
     }
   })
   .catch(next);
@@ -23,9 +23,14 @@ router.post('/signup', function (req, res, next){
   User.create(req.body)
   .then(newUser => {
     req.session.user = newUser;
-    res.status(201).send(newUser);
+    res.sendStatus(201);
   })
   .catch(next);
+})
+
+router.get('/logout', function (req, res, next){
+  req.session.user = null;
+  res.sendStatus(200);
 })
 
 module.exports = router;
